@@ -18,16 +18,20 @@ public:
 
 	void render();
 	void loadAnimations();
-	void playerEventHandler(int moving_speed);
-	
+	void playerEventHandler(int moving_speed, std::vector<GameObject*>* gameObjects);
+	GameObject* checkCollision(std::vector<GameObject*>* gameObjects, int x, int y);
+
 	void standingAnimation();
 	void runningLeftAnimation();
 	void runningRightAnimation();
 
+	int id;
+	static int idx;
 	int speed = 5;
-	int moved[2] = { 0, 0 };
 	const char* imagePath;
+	int moved[2] = { 0, 0 };
 	bool is_player = false;
+	bool is_collidable = false;
 
 	int still_animation_step = 0;
 	int running_left_animation_step = 0;
@@ -49,6 +53,10 @@ private:
 
 
 
+int GameObject::idx = 0;
+
+
+
 GameObject::GameObject(SDL_Renderer* renderer, const char* imagePath, int w, int h)
 {
 	this->dst.w = w;
@@ -56,6 +64,7 @@ GameObject::GameObject(SDL_Renderer* renderer, const char* imagePath, int w, int
 	this->renderer = renderer;
 	this->imagePath = imagePath;
 	this->texture = IMG_LoadTexture(this->renderer, imagePath);
+	this->id = this->idx++;
 
 	last_time_still = SDL_GetTicks();
 }
@@ -82,30 +91,58 @@ void GameObject::loadAnimations()
 
 
 
-void GameObject::playerEventHandler(int moving_speed)
+GameObject* GameObject::checkCollision(std::vector<GameObject*>* gameObjects, int x, int y)
+{
+	int px = this->dst.x;
+	int py = this->dst.y;
+
+	for (GameObject* gObject : *gameObjects)
+	{
+		if (gObject->id == this->id || !gObject->is_collidable) continue;
+		if (px - x <= gObject->dst.x + gObject->dst.w && px + x >= gObject->dst.x) {
+			if (py + y >= gObject->dst.y && py - y <= gObject->dst.y + gObject->dst.h) {
+				return gObject;
+			}
+		}
+	}
+	
+	return nullptr;
+}
+
+
+
+void GameObject::playerEventHandler(int moving_speed, std::vector<GameObject*>* gameObjects)
 {
 	const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
-	if (keystate[SDL_SCANCODE_W]) {
+	GameObject* colXL = this->checkCollision(gameObjects, this->speed, 0);
+	GameObject* colXR = this->checkCollision(gameObjects, -this->speed, 0);
+	GameObject* colYB = this->checkCollision(gameObjects, 0, -this->speed);
+	GameObject* colYT = this->checkCollision(gameObjects, 0, this->speed);
+
+	std::cout << colXL  << " + " << colXR << " + " << colYB << " + " << colYT << std::endl;
+
+
+	if (keystate[SDL_SCANCODE_W] && colYT == nullptr) {
 		this->moved[1] += this->speed;
 	}
 
-	if (keystate[SDL_SCANCODE_D]) {
+	if (keystate[SDL_SCANCODE_D] && colXR == nullptr) {
 		this->moved[0] -= this->speed;
 	}
 
-	if (keystate[SDL_SCANCODE_S]) {
+	if (keystate[SDL_SCANCODE_S] && colYB == nullptr) {
 		this->moved[1] -= this->speed;
 	}
 
-	if (keystate[SDL_SCANCODE_A]) {
+	if (keystate[SDL_SCANCODE_A] && colXL == nullptr) {
 		this->moved[0] += this->speed;
 	}
 
 	if (this->is_player) {
 		if (!is_animations_loaded) {
 			this->loadAnimations();
-			is_animations_loaded = true;
+			this->is_animations_loaded = true;
 		}
 		this->standingAnimation();
 		this->runningRightAnimation();

@@ -46,6 +46,7 @@ public:
 	void addTile(const char* tilePath, int x, int y);
 	GameObject *getCurrentTile(GameObject* gameObject);
 	void scale_tilemap(GameObject* player);
+	std::string getCollision(GameObject* player);
 	
 	void renderTilemap();
 	void renderGameObjects();
@@ -178,10 +179,12 @@ void Engine::loadTilemap(const char* tilemapFile, const char *objectsFile)
 		std::vector<std::string> v = split(line, ',');
 		std::vector<std::string> h = split(v.at(1), 'x');
 		std::vector<std::string> k = split(v.at(2), 'x');
+		std::string l = v.at(3);
 
 		GameObject *tmp = new GameObject(this->renderer, v.at(0).c_str(), std::stoi(k.at(0)), std::stoi(k.at(1)));
 		tmp->dst.x = std::stoi(h.at(0));
 		tmp->dst.y = std::stoi(h.at(1));
+		if (l == "true" || l == " true") tmp->is_collidable = true;
 		this->addGameObject(tmp);
 	}
 	this->file.close();
@@ -247,6 +250,7 @@ void Engine::scale_tilemap(GameObject* player)
 	player->moved[0] = 0;
 	player->moved[1] = 0;
 }
+
 
 
 

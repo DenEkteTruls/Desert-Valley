@@ -1,0 +1,7 @@
+﻿  Dessert Valley.cpp
+C:\Users\caspe\Desktop\Dessert Valley\Dessert Valley\engine.hpp(213,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\caspe\Desktop\Dessert Valley\Dessert Valley\engine.hpp(236,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\caspe\Desktop\Dessert Valley\Dessert Valley\engine.hpp(242,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\caspe\Desktop\Dessert Valley\Dessert Valley\engine.hpp(270,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\caspe\Desktop\Dessert Valley\Dessert Valley\engine.hpp(280,20): warning C4018: '<': signed/unsigned mismatch
+  Dessert Valley.vcxproj -> C:\Users\caspe\Desktop\Dessert Valley\Debug\Dessert Valley.exe

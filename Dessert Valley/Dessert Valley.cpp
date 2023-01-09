@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 		
 		if (!engine.menu->in_menu) {
 			white.dst = engine.getCurrentTile(&adam)->dst;
-			adam.playerEventHandler(engine.fpsSpeed);
+			adam.playerEventHandler(engine.fpsSpeed, &engine.gObjects);
 		}
 
 		engine.render();

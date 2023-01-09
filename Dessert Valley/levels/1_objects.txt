@@ -1,1 +1,1 @@
-buildings/houses/sand_house.png, 128x128, 384x477
+buildings/houses/sand_house.png, 128x128, 384x477, true
